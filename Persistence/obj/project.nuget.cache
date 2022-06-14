@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "cFBxR9h5IvJsNnucwS1W/AAsI9Bla/zecC7x30NhbhrxwNs9hGjoTGRZ7KxXgnfd4a49pfUUijst0/9kd93hfg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Samvel_Belyan\\source\\repos\\CartingService\\Persistence\\Persistence.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Samvel_Belyan\\.nuget\\packages\\litedb\\5.0.11\\litedb.5.0.11.nupkg.sha512"
+  ],
+  "logs": []
+}
