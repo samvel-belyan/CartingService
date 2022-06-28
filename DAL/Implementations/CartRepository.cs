@@ -1,21 +1,22 @@
 ﻿using AutoMapper;
 using DAL.Interfaces;
+using DAL.Models;
 using Persistence;
 
 namespace DAL.Implementations;
 
-internal class CartRepository : ICartRepository
+public class CartRepository : ICartRepository
 {
-    private readonly CartingDbContext _cartingDbContext;
+    private readonly ICartingDbContext _cartingDbContext;
     private readonly IMapper _mapper;
 
-    public CartRepository(CartingDbContext cartingDbContext, IMapper mapper)
+    public CartRepository(ICartingDbContext cartingDbContext, IMapper mapper)
     {
         _cartingDbContext = cartingDbContext;
         _mapper = mapper;
     }
 
-    public void AddCartItem(string id, Models.Item item) 
+    public void AddCartItem(string id, Models.Item item)
     {
         var item1 = _mapper.Map<Persistence.Models.Item>(item);
         _cartingDbContext.AddCartItem(id, item1);
@@ -32,5 +33,17 @@ internal class CartRepository : ICartRepository
     {
         var item1 = _mapper.Map<Persistence.Models.Item>(item);
         _cartingDbContext.RemoveCartItem(id, item1);
+    }
+
+    public Cart GetCart(string id)
+    {
+        var cart = _cartingDbContext.GetCart(id);
+        return _mapper.Map<DAL.Models.Cart>(cart);
+    }
+
+    public void AddCart(Cart cart)
+    {
+        var cartDomain = _mapper.Map<Persistence.Models.Cart>(cart);
+        _cartingDbContext.AddCart(cartDomain);
     }
 }

@@ -3,7 +3,7 @@ using Persistence.Models;
 
 namespace Persistence;
 
-public class CartingDbContext
+public class CartingDbContext : ICartingDbContext
 {
     private const string DbPath = @"C:\mpdb\MyData.db";
     private const string CollectionName = "carts";
@@ -31,11 +31,18 @@ public class CartingDbContext
 
             if (cart is null)
             {
-                throw new Exception("Cart with this id not found");
+                cart = new Cart()
+                {
+                    Id = id
+                };
+                cart.Items.Add(item);
+                collection.Insert(cart);
             }
-
-            cart.Items.Add(item);
-            collection.Update(cart);
+            else
+            {
+                cart.Items.Add(item);
+                collection.Insert(cart);
+            }
         }
     }
 
@@ -54,6 +61,28 @@ public class CartingDbContext
 
             cart.Items.Remove(item);
             collection.Update(cart);
+        }
+    }
+
+    public Cart GetCart(string id)
+    {
+        using (var db = new LiteDatabase(DbPath))
+        {
+            var collection = db.GetCollection<Cart>(CollectionName);
+
+            var cart = collection.FindById(id);
+
+            return cart;
+        }
+    }
+
+    public void AddCart(Cart cart)
+    {
+        using (var db = new LiteDatabase(DbPath))
+        {
+            var collection = db.GetCollection<Cart>(CollectionName);
+
+            collection.Insert(cart);
         }
     }
 }

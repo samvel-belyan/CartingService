@@ -1,8 +1,8 @@
-﻿using DAL.Models;
+﻿using Persistence.Models;
 
-namespace DAL.Interfaces;
+namespace Persistence;
 
-public interface ICartRepository
+public interface ICartingDbContext
 {
     IEnumerable<Item> GetCartItems(string id);
     void AddCartItem(string id, Item item);

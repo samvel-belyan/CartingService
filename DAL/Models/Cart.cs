@@ -2,7 +2,7 @@
 
 namespace DAL.Models;
 
-internal class Cart
+public class Cart
 {
     [Required]
     public string Id { get; set; }

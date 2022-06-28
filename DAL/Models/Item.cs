@@ -2,7 +2,7 @@
 
 namespace DAL.Models;
 
-internal class Item
+public class Item
 {
     [Required]
     public int Id { get; set; }
