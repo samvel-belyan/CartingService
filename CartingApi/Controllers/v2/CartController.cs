@@ -24,7 +24,7 @@ public class CartController : ControllerBase
     /// <returns>Cart with its items</returns>
     [HttpGet]
     [Route("")]
-    public IActionResult GetcartInfo()
+    public IActionResult GetcartInfo(string id)
     {
         throw new NotImplementedException();
     }
