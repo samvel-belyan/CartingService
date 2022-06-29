@@ -2,16 +2,18 @@ using AutoMapper;
 using BLL.Implementations;
 using BLL.Interfaces;
 using CartingApi.Profiles;
+using CartingApi.SwaggerFiles;
 using DAL.Implementations;
 using DAL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Options;
 using Persistence;
-
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddSingleton<ICartingDbContext, CartingDbContext>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
@@ -24,39 +26,42 @@ var mapperConfig = new MapperConfiguration(mc =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddApiVersioning(o =>
+builder.Services.AddApiVersioning(options =>
 {
-    //o.UseApiBehavior = false;
-    o.AssumeDefaultVersionWhenUnspecified = true;
-    o.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
-    o.ReportApiVersions = true;
-    o.ApiVersionReader = ApiVersionReader.Combine(
-        new QueryStringApiVersionReader("api-version"),
-        new HeaderApiVersionReader("X-Version"),
-        new MediaTypeApiVersionReader("ver"));
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
 });
 
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
 
-//builder.Services.AddApiVersioningConfigured();
-
-//builder.Services.AddSwaggerSwashbuckleConfigured();
+    options.SubstituteApiVersionInUrl = true;
+});
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerDocument();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
 if (app.Environment.IsDevelopment())
 {
-    var descriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-    app.UseSwaggerUI(options =>
-    {
-        // Build a swagger endpoint for each discovered API version
-        foreach (var description in descriptionProvider.ApiVersionDescriptions)
-        {
-            options.SwaggerEndpoint($"{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-        }
-    });
+    app.UseSwagger();
+
+    app.UseSwaggerUI(
+            options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                }
+            });
+
 }
 // Configure the HTTP request pipeline.
 
