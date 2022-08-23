@@ -14,8 +14,13 @@ namespace CartingApi.Controllers.v1;
 public class CartController : ControllerBase
 {
     private readonly ICartService _cartService;
+    private readonly ILogger _logger;
 
-    public CartController(ICartService cartService) => _cartService = cartService;
+    public CartController(ICartService cartService, ILogger<CartController> logger)
+    {
+         _cartService = cartService;
+        _logger = logger;
+    }
 
     /// <summary>
     /// Gets Cart with its items
@@ -28,7 +33,11 @@ public class CartController : ControllerBase
         var cart = _cartService.GetCartInfo(id);
 
         if (cart is null)
+        {
+            _logger.LogError("Cart is not found with the following id: {0}", id);
             return NotFound();
+        }
+        
         return Ok(cart);
     }
 
@@ -55,6 +64,7 @@ public class CartController : ControllerBase
     public IActionResult DeleteItemFromCart(string id, Item item)
     {
         _cartService.DeleteItemFromCart(id, item);
+        _logger.LogWarning("Cart with the following id: {0}, has been deleted", id);
         return Ok();
     }
 }

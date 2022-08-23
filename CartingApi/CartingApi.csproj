@@ -9,9 +9,13 @@
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
+		<ApplicationInsightsResourceId>/subscriptions/9dee8573-0d77-49f7-b5f0-05ad0012710a/resourceGroups/logginghw/providers/microsoft.insights/components/myappinsight</ApplicationInsightsResourceId>
+		<UserSecretsId>0676c09d-6c93-4e7f-8d9d-6995e852eba8</UserSecretsId>
 	</PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CorrelationId" Version="3.0.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />

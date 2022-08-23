@@ -3,6 +3,7 @@ using BLL.Implementations;
 using BLL.Interfaces;
 using CartingApi.Profiles;
 using CartingApi.SwaggerFiles;
+using CorrelationId;
 using DAL.Implementations;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,7 @@ builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefault
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 
